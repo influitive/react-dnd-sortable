@@ -41,7 +41,6 @@ var App = React.createClass({
     );
   },
   _handleSorted: function (sortedCollection) {
-    console.log("sortedCollection: ", sortedCollection.map(function(x){ return x.x; }));
     this.setState({collection: sortedCollection});
   }
 });

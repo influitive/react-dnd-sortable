@@ -10,19 +10,29 @@ var React            = require('react'),
 var dragSource = {
   beginDrag: function (props) {
     return {
-      id: props[props.itemIdentifier]
+      position: props.position
     };
+  },
+
+  endDrag: function(props, monitor){
+    if (monitor.didDrop()) {
+      props.onDrop();
+    } else {
+      props.onCancel();
+    }
   }
 };
 
 var dropTarget = {
   hover: function (props, monitor) {
-    var itemIdentifier = props.itemIdentifier;
+    var sourcePosition = monitor.getItem().position,
+        targetPosition = props.position;
 
-    var sourceId = monitor.getItem().id,
-        targetId = props[itemIdentifier];
+    console.log("hover : target: ", props);
+    console.log("hover : sourcePosition: ", sourcePosition);
+    console.log("hover : targetPosition: ", targetPosition);
 
-    if (sourceId !== targetId) { props.onSort(sourceId, targetId); }
+    if (sourcePosition !== targetPosition) { props.onHover(sourcePosition, targetPosition); }
   }
 };
 
@@ -62,17 +72,30 @@ var SortableCollection = React.createClass({
     onSorted:       React.PropTypes.func,
     children:       React.PropTypes.element.isRequired,
   },
-  getDefaultProps: function () {
+
+  getInitialState: function () {
     return {
-      itemIdentifier: 'id'
+      // Stores the currently sorted collection as reflected by dragging,
+      // Collection will be mutated on drag hover so the browser actually moves items
+      collection: this.props.collection
     };
   },
-  render: function () {
-    var itemIdentifier = this.props.itemIdentifier
 
-    var children = this.props.collection.map(function (props, i) {
+  componentWillReceiveProps: function (nextProps) {
+    // Once the onDrop callback is fired with the new collection
+    // we need to re-set this collection to ultimately reflect the new order
+    this.setState({collection: nextProps.collection});
+  },
+
+  render: function () {
+    var children = this.state.collection.map(function (props, i) {
+      var originalPosition = this.props.collection.indexOf(props);
+
       return (
-        <SortableItem {...props} itemIdentifier={itemIdentifier} key={i} onSort={this._handleSort}>
+        <SortableItem {...props} key={i} position={originalPosition}
+          onHover={this._handleHover}
+          onDrop={this._handleDrop}
+          onCancel={this._handleCancel} >
           {this.props.children}
         </SortableItem>
       );
@@ -82,20 +105,29 @@ var SortableCollection = React.createClass({
       <ul>{children}</ul>
     );
   },
-  _handleSort: function (sourceId, targetId) {
-    var itemIdentifier = this.props.itemIdentifier;
+  // Tracks hover states to modify interface to reflect current position hovered
+  _handleHover: function (sourcePosition, targetPosition) {
+    var source                = this.props.collection[sourcePosition],
+        currentSourcePosition = this.state.collection.indexOf(source);
 
-    var source      = this.props.collection.filter(function(i){ return i[itemIdentifier] == sourceId; })[0],
-        target      = this.props.collection.filter(function(i){ return i[itemIdentifier] == targetId; })[0],
-        sourceIndex = this.props.collection.indexOf(source),
-        targetIndex = this.props.collection.indexOf(target);
+    this.setState(update(this.state, {
+      collection: {$splice: [
+        [currentSourcePosition, 1],
+        [targetPosition, 0, source]
+      ]}
+    }));
+  },
 
-    var collection = update(this.props.collection, {$splice: [
-      [sourceIndex, 1],
-      [targetIndex, 0, source]
-    ]});
+  // Handles the final callback to calling component to say "this is the new collection"
+  _handleDrop: function () {
+    if (this.props.collection !== this.state.collection) { // Dropped on yourself
+      this.props.onSorted(this.state.collection);
+    }
+  },
 
-    this.props.onSorted(collection);
+  // If item is dropped outside a valid dropTarget, we cancel and reset
+  _handleCancel: function () {
+    this.setState({collection: this.props.collection});
   }
 });
 
