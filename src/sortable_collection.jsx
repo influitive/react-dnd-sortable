@@ -28,10 +28,6 @@ var dropTarget = {
     var sourcePosition = monitor.getItem().position,
         targetPosition = props.position;
 
-    console.log("hover : target: ", props);
-    console.log("hover : sourcePosition: ", sourcePosition);
-    console.log("hover : targetPosition: ", targetPosition);
-
     if (sourcePosition !== targetPosition) { props.onHover(sourcePosition, targetPosition); }
   }
 };
@@ -65,12 +61,11 @@ var Tmp          = DropTarget("X", dropTarget, collectTarget)(Item),
 
 var SortableCollection = React.createClass({
   propTypes: {
-    type:           React.PropTypes.string,
-    dragRef:        React.PropTypes.string,
+    type:           React.PropTypes.string, // unique name for draggable/droppable constraints, defaults to "uniq" name
+    handle:         React.PropTypes.string, // ref of draggable element, otherwise the whole item is draggable (TODO)
     collection:     React.PropTypes.array,
-    itemIdentifier: React.PropTypes.string, // they key to uniquely identify each item in collection
     onSorted:       React.PropTypes.func,
-    children:       React.PropTypes.element.isRequired,
+    children:       React.PropTypes.element.isRequired, // single element to act as template for collection
   },
 
   getInitialState: function () {
@@ -106,14 +101,16 @@ var SortableCollection = React.createClass({
     );
   },
   // Tracks hover states to modify interface to reflect current position hovered
-  _handleHover: function (sourcePosition, targetPosition) {
-    var source                = this.props.collection[sourcePosition],
-        currentSourcePosition = this.state.collection.indexOf(source);
+  _handleHover: function (originalSourcePosition, originalTargetPosition) {
+    var source                = this.props.collection[originalSourcePosition],
+        currentSourcePosition = this.state.collection.indexOf(source),
+        target                = this.props.collection[originalTargetPosition],
+        currentTargetPosition = this.state.collection.indexOf(target);
 
     this.setState(update(this.state, {
       collection: {$splice: [
         [currentSourcePosition, 1],
-        [targetPosition, 0, source]
+        [currentTargetPosition, 0, source]
       ]}
     }));
   },
