@@ -109,11 +109,14 @@ var SortableCollection = React.createClass({
   _handleHover: function (sourcePosition, targetPosition) {
     var source                = this.props.collection[sourcePosition],
         currentSourcePosition = this.state.collection.indexOf(source);
+  
+    var target                = this.props.collection[targetPosition],
+        currentTargetPosition = this.state.collection.indexOf(target);
 
     this.setState(update(this.state, {
       collection: {$splice: [
         [currentSourcePosition, 1],
-        [targetPosition, 0, source]
+        [currentTargetPosition, 0, source]
       ]}
     }));
   },
