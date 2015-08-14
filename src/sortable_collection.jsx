@@ -9,8 +9,12 @@ var React            = require('react'),
 
 var dragSource = {
   beginDrag: function (props) {
+    console.log("begin dragging: ", props.x, "from start: ", props.startingPosition);
+    console.log("begin dragging: ", props.x, "from next: ", props.nextPosition);
     return {
-      position: props.position
+      x: props.x,
+      startingPosition: props.startingPosition,
+      nextPosition: props.nextPosition
     };
   },
 
@@ -25,14 +29,19 @@ var dragSource = {
 
 var dropTarget = {
   hover: function (props, monitor) {
-    var sourcePosition = monitor.getItem().position,
-        targetPosition = props.position;
+    var sourceStartingPosition = monitor.getItem().startingPosition,
+        sourceNextPosition     = monitor.getItem().nextPosition,
+        targetStartingPosition = props.startingPosition,
+        targetNextPosition     = props.nextPosition;
 
-    console.log("hover : target: ", props);
-    console.log("hover : sourcePosition: ", sourcePosition);
-    console.log("hover : targetPosition: ", targetPosition);
-
-    if (sourcePosition !== targetPosition) { props.onHover(sourcePosition, targetPosition); }
+    if (sourceNextPosition !== targetNextPosition) {
+      console.log("hover : source: ", monitor.getItem());
+      console.log("hover : target: ", props);
+      console.log("hover : sourceNextPosition: ", sourceNextPosition);
+      console.log("hover : sourceStartingPosition: ", sourceStartingPosition);
+      console.log("hover : targetStartingPosition: ", targetStartingPosition);
+      props.onHover(sourceNextPosition, targetNextPosition);
+    }
   }
 };
 
@@ -89,10 +98,13 @@ var SortableCollection = React.createClass({
 
   render: function () {
     var children = this.state.collection.map(function (props, i) {
-      var originalPosition = this.props.collection.indexOf(props);
+      var startingPosition = this.props.collection.indexOf(props);
+
+      console.log("item: ", props.x, " startingPosition: ", startingPosition);
+      console.log("item: ", props.x, " nextPosition: ", i);
 
       return (
-        <SortableItem {...props} key={i} position={originalPosition}
+        <SortableItem {...props} key={i} startingPosition={startingPosition} nextPosition={i}
           onHover={this._handleHover}
           onDrop={this._handleDrop}
           onCancel={this._handleCancel} >
@@ -107,12 +119,11 @@ var SortableCollection = React.createClass({
   },
   // Tracks hover states to modify interface to reflect current position hovered
   _handleHover: function (sourcePosition, targetPosition) {
-    var source                = this.props.collection[sourcePosition],
-        currentSourcePosition = this.state.collection.indexOf(source);
+    var source = this.state.collection[sourcePosition];
 
     this.setState(update(this.state, {
       collection: {$splice: [
-        [currentSourcePosition, 1],
+        [sourcePosition, 1],
         [targetPosition, 0, source]
       ]}
     }));
