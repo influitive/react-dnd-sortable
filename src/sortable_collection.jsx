@@ -60,9 +60,16 @@ var SortableCollection = React.createClass({
   propTypes: {
     type:           React.PropTypes.string, // unique name for draggable/droppable constraints, defaults to "uniq" name
     handle:         React.PropTypes.string, // ref of draggable element, otherwise the whole item is draggable (TODO)
+    container:      React.PropTypes.string, // wrapping DOM element tagName
     collection:     React.PropTypes.array,
     onSorted:       React.PropTypes.func,
     children:       React.PropTypes.element.isRequired, // single element to act as template for collection
+  },
+
+  getDefaultProps: function () {
+    return {
+      container: "ul"
+    };
   },
 
   getInitialState: function () {
@@ -104,7 +111,7 @@ var SortableCollection = React.createClass({
     }, this);
 
     return (
-      <ul>{children}</ul>
+      React.createElement(this.props.container, this.props, children)
     );
   },
   // Tracks hover states to modify interface to reflect current position hovered

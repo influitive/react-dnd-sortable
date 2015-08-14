@@ -37,7 +37,7 @@ var App = React.createClass({
   render: function () {
     return (
       <p>
-        <SortableCollection collection={this.state.collection1} onSorted={this._handleSorted1}>
+        <SortableCollection container="ol" collection={this.state.collection1} onSorted={this._handleSorted1}>
           <SortableItem />
         </SortableCollection>
         <br />
