@@ -30,18 +30,28 @@ var SortableItem = React.createClass({
 var App = React.createClass({
   getInitialState: function () {
     return {
-      collection: collection
+      collection1: collection,
+      collection2: Array.prototype.slice.call(collection)
     };
   },
   render: function () {
     return (
-      <SortableCollection collection={this.state.collection} onSorted={this._handleSorted}>
-        <SortableItem />
-      </SortableCollection>
+      <p>
+        <SortableCollection collection={this.state.collection1} onSorted={this._handleSorted1}>
+          <SortableItem />
+        </SortableCollection>
+        <br />
+        <SortableCollection collection={this.state.collection2} onSorted={this._handleSorted2}>
+          <SortableItem />
+        </SortableCollection>
+      </p>
     );
   },
-  _handleSorted: function (sortedCollection) {
-    this.setState({collection: sortedCollection});
+  _handleSorted1: function (sortedCollection) {
+    this.setState({collection1: sortedCollection});
+  },
+  _handleSorted2: function (sortedCollection) {
+    this.setState({collection2: sortedCollection});
   }
 });
 

@@ -1,6 +1,6 @@
 var React            = require('react'),
     update           = require('react/lib/update'),
-    clone            = require('react/addons').addons.cloneWithProps,
+    clone            = React.cloneElement,
     dnd              = require('react-dnd'),
     DragSource       = dnd.DragSource,
     DropTarget       = dnd.DropTarget,
@@ -56,9 +56,6 @@ var Item = React.createClass({
   }
 });
 
-var Tmp          = DropTarget("X", dropTarget, collectTarget)(Item),
-    SortableItem = DragSource("X", dragSource, collectSource)(Tmp);
-
 var SortableCollection = React.createClass({
   propTypes: {
     type:           React.PropTypes.string, // unique name for draggable/droppable constraints, defaults to "uniq" name
@@ -69,10 +66,18 @@ var SortableCollection = React.createClass({
   },
 
   getInitialState: function () {
+    var type = this.props.type || this._generateType();
+
+    var DropItem      = DropTarget(type, dropTarget, collectTarget)(Item),
+        DragDropItem  = DragSource(type, dragSource, collectSource)(DropItem);
+
     return {
       // Stores the currently sorted collection as reflected by dragging,
       // Collection will be mutated on drag hover so the browser actually moves items
-      collection: this.props.collection
+      collection: this.props.collection,
+      // Stores the class to render instances of for each entry in collection
+      // Note sure of a better way to do this to enable  non-colliding types for each collection
+      SortableItemClass: DragDropItem
     };
   },
 
@@ -83,6 +88,8 @@ var SortableCollection = React.createClass({
   },
 
   render: function () {
+    var SortableItem = this.state.SortableItemClass;
+
     var children = this.state.collection.map(function (props, i) {
       var originalPosition = this.props.collection.indexOf(props);
 
@@ -125,6 +132,12 @@ var SortableCollection = React.createClass({
   // If item is dropped outside a valid dropTarget, we cancel and reset
   _handleCancel: function () {
     this.setState({collection: this.props.collection});
+  },
+
+  // Expected to be random enough so as never to collide with other SortableCollections
+  // UUID would obv be better but I *think* the odds of this colliding are pretty slim
+  _generateType: function () {
+    return Math.random().toString(36).substring(7);
   }
 });
 
