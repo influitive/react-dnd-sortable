@@ -1,19 +1,19 @@
 {
   "name": "react-sortable",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Drag/Drop sortable collections using React-DnD",
+  "main": "src/sortable_collection.jsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "classnames": "^2.1.3",
     "react": "^0.13.3",
     "react-dnd": "^1.1.4"
   },
   "devDependencies": {
+    "classnames": "^2.1.3",
     "jsx-loader": "^0.13.2",
     "react-hot-loader": "^1.2.8",
     "strict-loader": "^0.1.2",
