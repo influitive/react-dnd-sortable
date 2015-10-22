@@ -60,7 +60,7 @@ var SortableCollection = React.createClass({
 
 #### TODO
 
-1. Right now sortable collection wraps items in a `<ul>`. It'd be nice to make this customizable
+1. More classes on draggin/dropping for better behaviours
 2. Sortable "type" is random, meaning you can't drag/drop onto other containers. It'd be nice
    to support dragging between different sortables
 3. Support a customizable "handle" that a user can drag within template so the whole item doesn't
