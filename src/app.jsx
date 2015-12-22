@@ -1,4 +1,5 @@
 var React      = require('react'),
+    ReactDOM   = require('react-dom'),
     classnames = require('classnames');
 
 var SortableCollection = require('sortable_collection');
@@ -56,4 +57,4 @@ var App = React.createClass({
 });
 
 
-React.render(<App />, document.getElementById('container'));
+ReactDOM.render(<App />, document.getElementById('container'));

@@ -5,7 +5,7 @@ var React            = require('react'),
     DragSource       = dnd.DragSource,
     DropTarget       = dnd.DropTarget,
     DragDropContext  = dnd.DragDropContext,
-    HTML5Backend     = require('react-dnd/modules/backends/HTML5');
+    HTML5Backend     = require('react-dnd-html5-backend');
 
 var dragSource = {
   beginDrag: function (props) {
@@ -50,9 +50,7 @@ var Item = React.createClass({
     var connectSource = this.props.connectDragSource,
         connectTarget = this.props.connectDropTarget;
 
-    return connectSource(connectTarget(
-      clone(this.props.children, this.props)
-    ));
+    clone(this.props.children, this.props.merge(ref: connectSource(connectTarget(findDOMNode(instance)))))
   }
 });
 
