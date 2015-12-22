@@ -47,10 +47,10 @@ function collectTarget(connect, monitor) {
 
 var Item = React.createClass({
   render: function () {
-    var connectSource = this.props.connectDragSource,
-        connectTarget = this.props.connectDropTarget;
+    var connect = instance =>
+      this.props.connectDragSource(this.props.connectDropTarget(instance));
 
-    clone(this.props.children, this.props.merge(ref: connectSource(connectTarget(findDOMNode(instance)))))
+      return clone(this.props.children, { ...this.props, ref: connect });
   }
 });
 

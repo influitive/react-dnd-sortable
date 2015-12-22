@@ -12,7 +12,7 @@ module.exports = {
 
   entry: {
     app: [
-      'webpack-dev-server/client?http://localhost:8080/javascripts/',
+      'webpack-dev-server/client?http://localhost:8085/',
       'webpack/hot/only-dev-server',
       './app.jsx'
     ]
@@ -21,7 +21,7 @@ module.exports = {
   output: {
     filename: '[name].js', // Will output app.js (for example with above entry)
     path: __dirname + '/public', // I don't think this matters since files aren't actually outputted??
-    publicPath: 'http://localhost:8080/javascripts/' // Required for webpack-dev-server
+    publicPath: 'http://localhost:8085/' // Required for webpack-dev-server
   },
 
   // Require the webpack and react-hot-loader plugins
@@ -39,7 +39,7 @@ module.exports = {
 
   module: {
     loaders: [
-      { test: /\.jsx$/, loaders: ['react-hot', 'jsx-loader'] },
+      { test: /\.jsx$/, loaders: ['react-hot', 'babel'] },
       { test: /\.jsx?$/, exclude: /node_modules/, loader: 'strict' }
     ]
   }
