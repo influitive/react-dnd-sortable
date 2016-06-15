@@ -8,7 +8,7 @@ React Sortable
 
 #### Usage
 
-( See src/app.jsx for another working example )
+( See example/app.jsx for another working example )
 
 ```javascript
 
@@ -47,9 +47,9 @@ var SortableCollection = React.createClass({
 
   render: function () {
     return (
-      <Sortable collection={this.state.collection} onSorted={this._handleSorted}>
-        <Template />
-      </Sortable>
+      <Sortable collection={this.state.collection}
+        onSorted={this._handleSorted}
+        template={<Template />} />
     );
   },
   _handleSorted: function (sortedCollection) {

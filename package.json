@@ -1,23 +1,40 @@
 {
-  "name": "react-sortable",
-  "version": "1.0.0",
+  "name": "react-dnd-sortable",
+  "version": "0.0.3",
   "description": "Drag/Drop sortable collections using React-DnD",
-  "main": "src/sortable_collection.jsx",
+  "main": "lib/react-dnd-sortable.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/influitive/react-dnd-sortable"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node ./example/dev-server.js",
+    "build": "babel src --out-dir lib",
+    "clean": "rm -rf lib/*",
+    "prepublish": "npm run clean && npm run build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "react": "^0.13.3",
-    "react-dnd": "^1.1.4"
+    "lodash.flow": "^3.2.1",
+    "react-dnd": "^2.0.2",
+    "react-dnd-html5-backend": "^2.0.2"
+  },
+  "peerDependencies": {
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.3.17",
+    "babel-core": "^6.3.26",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
     "classnames": "^2.1.3",
-    "jsx-loader": "^0.13.2",
-    "react-hot-loader": "^1.2.8",
-    "strict-loader": "^0.1.2",
-    "webpack": "^1.11.0",
-    "webpack-dev-server": "^1.10.1"
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "webpack": "^1.12.9"
   }
 }
